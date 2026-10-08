@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wakilify AI - Nairobi Legal Tech Investor Outreach Agent</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .badge-verified { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-pending { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .badge-meeting { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.3); }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+          <i class="fa-solid fa-scale-balanced text-slate-950 text-xl font-bold"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+            Wakilify AI <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">Nairobi Agent</span>
+          </h1>
+          <p class="text-xs text-slate-400">Autonomous Legal Lead Scraper & Angel Investor Outreach Pipeline</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-4">
+        <button onclick="seedDirectory()" class="px-4 py-2 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 transition flex items-center gap-2">
+          <i class="fa-solid fa-cloud-arrow-down"></i> Sync Nairobi Firm Directory
+        </button>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-slate-800 border border-slate-700 text-slate-300">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Agent Online
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    
+    <!-- Top Stats Bar -->
+    <div class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
+      <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl">
+        <span class="text-xs text-slate-400 font-medium">Nairobi Firms</span>
+        <div id="stat-firms" class="text-2xl font-bold text-white mt-1">--</div>
+      </div>
+      <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl">
+        <span class="text-xs text-slate-400 font-medium">Verified Advocates</span>
+        <div id="stat-leads" class="text-2xl font-bold text-emerald-400 mt-1">--</div>
+      </div>
+      <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl">
+        <span class="text-xs text-slate-400 font-medium">Contacted</span>
+        <div id="stat-contacted" class="text-2xl font-bold text-blue-400 mt-1">--</div>
+      </div>
+      <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl">
+        <span class="text-xs text-slate-400 font-medium">Pending Review</span>
+        <div id="stat-pending" class="text-2xl font-bold text-amber-400 mt-1">--</div>
+      </div>
+      <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl">
+        <span class="text-xs text-slate-400 font-medium">Meetings Booked</span>
+        <div id="stat-meetings" class="text-2xl font-bold text-purple-400 mt-1">--</div>
+      </div>
+      <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl">
+        <span class="text-xs text-slate-400 font-medium">Compliance Opt-outs</span>
+        <div id="stat-optouts" class="text-2xl font-bold text-slate-400 mt-1">--</div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex border-b border-slate-800 space-x-6 mb-6">
+      <button onclick="switchTab('leads')" id="tab-btn-leads" class="tab-btn pb-3 text-sm font-semibold border-b-2 border-emerald-500 text-emerald-400 flex items-center gap-2">
+        <i class="fa-solid fa-users"></i> Nairobi Leads Pipeline
+      </button>
+      <button onclick="switchTab('queue')" id="tab-btn-queue" class="tab-btn pb-3 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
+        <i class="fa-solid fa-envelope-open-text"></i> Approval Queue (<span id="queue-count">0</span>)
+      </button>
+      <button onclick="switchTab('threads')" id="tab-btn-threads" class="tab-btn pb-3 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
+        <i class="fa-solid fa-comments"></i> Active AI Conversations
+      </button>
+      <button onclick="switchTab('meetings')" id="tab-btn-meetings" class="tab-btn pb-3 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
+        <i class="fa-solid fa-calendar-check"></i> Booked Meetings
+      </button>
+      <button onclick="switchTab('simulator')" id="tab-btn-simulator" class="tab-btn pb-3 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
+        <i class="fa-solid fa-flask"></i> Response Simulator & Bot Test
+      </button>
+      <button onclick="switchTab('settings')" id="tab-btn-settings" class="tab-btn pb-3 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
+        <i class="fa-solid fa-sliders"></i> Agent Settings
+      </button>
+    </div>
+
+    <!-- Tab 1: Nairobi Leads Pipeline -->
+    <section id="tab-leads" class="tab-content">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
+        <div class="p-4 border-b border-slate-800 flex flex-wrap gap-4 items-center justify-between">
+          <div class="flex items-center gap-3">
+            <input type="text" id="lead-search" placeholder="Search lawyer, email, or firm..." onkeyup="filterLeads()"
+                   class="bg-slate-950 border border-slate-700 text-sm rounded-lg px-3 py-2 w-72 text-white focus:outline-none focus:border-emerald-500">
+            <select id="status-filter" onchange="filterLeads()" class="bg-slate-950 border border-slate-700 text-sm rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+              <option value="">All Statuses</option>
+              <option value="VERIFIED">Verified</option>
+              <option value="CONTACTED">Contacted</option>
+              <option value="MEETING_BOOKED">Meeting Booked</option>
+              <option value="OPTED_OUT">Opted Out</option>
+            </select>
+          </div>
+          <div class="text-xs text-slate-400">
+            Targeting corporate advocates in Upper Hill, Westlands & Kilimani
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-slate-300">
+            <thead class="bg-slate-950/60 text-xs uppercase text-slate-400 border-b border-slate-800">
+              <tr>
+                <th class="px-6 py-3">Advocate / Partner</th>
+                <th class="px-6 py-3">Firm & Location</th>
+                <th class="px-6 py-3">Contact</th>
+                <th class="px-6 py-3">Verification</th>
+                <th class="px-6 py-3">Outreach Status</th>
+                <th class="px-6 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="leads-table-body" class="divide-y divide-slate-800">
+              <tr><td colspan="6" class="px-6 py-8 text-center text-slate-500">Loading leads...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Approval Queue -->
+    <section id="tab-queue" class="tab-content hidden">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+        <h2 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved text-amber-400"></i> Human-In-The-Loop Approval Queue
+        </h2>
+        <p class="text-sm text-slate-400 mb-6">Review initial investor cold pitches and AI replies before physical delivery to preserve relationship etiquette.</p>
+        <div id="queue-container" class="space-y-4">
+          <div class="text-slate-500 text-sm text-center py-8">Queue is currently empty. All drafts approved!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Active AI Conversations -->
+    <section id="tab-threads" class="tab-content hidden">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Thread List -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+          <h3 class="text-sm font-bold text-slate-300 uppercase tracking-wider mb-4">Active Email Threads</h3>
+          <div id="threads-list" class="space-y-2 max-h-[600px] overflow-y-auto">
+            <div class="text-xs text-slate-500 text-center py-4">No conversations yet.</div>
+          </div>
+        </div>
+
+        <!-- Thread Viewer -->
+        <div class="md:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-6 flex flex-col h-[650px]">
+          <div id="thread-header" class="border-b border-slate-800 pb-4 mb-4">
+            <h3 class="text-lg font-bold text-white" id="thread-subject">Select a conversation thread</h3>
+            <p class="text-xs text-slate-400" id="thread-meta">Click any lawyer on the left to inspect conversation history</p>
+          </div>
+          <div id="thread-messages" class="flex-1 overflow-y-auto space-y-4 pr-2">
+            <div class="text-center text-slate-500 my-auto">Select a thread to view dialog.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 4: Booked Meetings -->
+    <section id="tab-meetings" class="tab-content hidden">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+        <h2 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-handshake text-purple-400"></i> Scheduled Angel Investor Meetings
+        </h2>
+        <p class="text-sm text-slate-400 mb-6">Meetings negotiated and confirmed autonomously by the AI chatbot.</p>
+        <div id="meetings-list" class="space-y-4">
+          <div class="text-slate-500 text-sm text-center py-8">No meetings scheduled yet. Send outreach or simulate a reply!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 5: Simulator -->
+    <section id="tab-simulator" class="tab-content hidden">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 max-w-3xl mx-auto">
+        <h2 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-robot text-teal-400"></i> Inbound Lawyer Reply Simulator
+        </h2>
+        <p class="text-sm text-slate-400 mb-6">Simulate a Nairobi law partner replying to your pitch to test the AI's intent classification, objection handling, calendar booking, and instant founder alerts.</p>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Select Lawyer Lead</label>
+            <select id="sim-lawyer-select" class="w-full bg-slate-950 border border-slate-700 text-sm rounded-lg p-2.5 text-white focus:border-emerald-500">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Pre-made Response Scenarios</label>
+            <div class="flex flex-wrap gap-2 mb-2">
+              <button onclick="fillScenario('meet')" class="px-3 py-1.5 text-xs bg-purple-900/40 hover:bg-purple-800/60 border border-purple-500/40 text-purple-300 rounded-lg">
+                🤝 "Let's meet Thursday at 3 PM in Upper Hill"
+              </button>
+              <button onclick="fillScenario('traction')" class="px-3 py-1.5 text-xs bg-blue-900/40 hover:bg-blue-800/60 border border-blue-500/40 text-blue-300 rounded-lg">
+                📊 "Send me your deck and Nairobi pilot traction"
+              </button>
+              <button onclick="fillScenario('privilege')" class="px-3 py-1.5 text-xs bg-amber-900/40 hover:bg-amber-800/60 border border-amber-500/40 text-amber-300 rounded-lg">
+                ⚖️ "How do you guarantee advocate-client confidentiality?"
+              </button>
+              <button onclick="fillScenario('busy')" class="px-3 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 rounded-lg">
+                ⏳ "Too busy right now, check back in 2 weeks"
+              </button>
+              <button onclick="fillScenario('unsub')" class="px-3 py-1.5 text-xs bg-rose-900/40 hover:bg-rose-800/60 border border-rose-500/40 text-rose-300 rounded-lg">
+                🛑 "Unsubscribe from your mailing list"
+              </button>
+            </div>
+            <textarea id="sim-body" rows="4" placeholder="Type simulated lawyer email body here..."
+                      class="w-full bg-slate-950 border border-slate-700 text-sm rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500"></textarea>
+          </div>
+
+          <button onclick="submitSimulatedReply()" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold text-sm rounded-lg shadow-lg shadow-emerald-500/20 transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-paper-plane"></i> Send Inbound Reply & Trigger Chatbot
+          </button>
+
+          <div id="sim-result" class="hidden mt-6 p-4 rounded-xl border border-slate-800 bg-slate-950">
+            <!-- Simulated execution results rendered here -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 6: Settings -->
+    <section id="tab-settings" class="tab-content hidden">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 max-w-2xl mx-auto">
+        <h2 class="text-lg font-bold text-white mb-2">Agent & Pitch Configuration</h2>
+        <p class="text-sm text-slate-400 mb-6">Customize startup details, calendar links, and email safeguards.</p>
+
+        <form onsubmit="saveSettings(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Startup Name</label>
+            <input type="text" id="cfg-startup" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Founder Name</label>
+              <input type="text" id="cfg-founder" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Founder Email</label>
+              <input type="email" id="cfg-email" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Meeting Booking URL (Calendly / Cal.com)</label>
+            <input type="url" id="cfg-calendly" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Gemini API Key (Optional)</label>
+            <input type="password" id="cfg-gemini" placeholder="AI operates intelligently on built-in rules if empty" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-sm text-white">
+          </div>
+          <div class="pt-4 border-t border-slate-800 flex items-center justify-between">
+            <label class="flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
+              <input type="checkbox" id="cfg-approval" class="w-4 h-4 rounded text-emerald-600 focus:ring-0">
+              Require Human Review before sending emails
+            </label>
+            <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-lg transition">
+              Save Settings
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Pitch Preview Modal -->
+  <div id="pitch-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-4 mb-4">
+        <h3 class="text-base font-bold text-white" id="modal-title">Personalized Cold Pitch Preview</h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <div class="mb-4">
+        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Subject</label>
+        <input type="text" id="modal-subject" readonly class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-sm text-white font-mono">
+      </div>
+      <div class="mb-6">
+        <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Email Body</label>
+        <textarea id="modal-body" rows="10" readonly class="w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-sm text-slate-200 font-mono"></textarea>
+      </div>
+      <div class="flex justify-end gap-3">
+        <button onclick="closeModal()" class="px-4 py-2 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">Close</button>
+        <button id="modal-send-btn" class="px-4 py-2 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-2">
+          <i class="fa-solid fa-paper-plane"></i> Dispatch / Queue Pitch
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentLeads = [];
+    let selectedThreadId = null;
+
+    async function loadStats() {
+      try {
+        const res = await fetch('/api/stats');
+        const d = await res.json();
+        document.getElementById('stat-firms').innerText = d.total_firms;
+        document.getElementById('stat-leads').innerText = d.verified_leads;
+        document.getElementById('stat-contacted').innerText = d.contacted;
+        document.getElementById('stat-pending').innerText = d.pending_approval;
+        document.getElementById('stat-meetings').innerText = d.meetings_booked;
+        document.getElementById('stat-optouts').innerText = d.opt_outs;
+        document.getElementById('queue-count').innerText = d.pending_approval;
+      } catch (e) {
+        console.error("Stats load failed", e);
+      }
+    }
+
+    async function loadLeads() {
+      try {
+        const res = await fetch('/api/leads');
+        currentLeads = await res.json();
+        renderLeadsTable(currentLeads);
+        populateSimSelect(currentLeads);
+      } catch (e) {
+        console.error("Leads load failed", e);
+      }
+    }
+
+    function renderLeadsTable(leads) {
+      const tbody = document.getElementById('leads-table-body');
+      if (!leads.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-8 text-center text-slate-500">No leads discovered yet. Click "Sync Nairobi Firm Directory" above.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = leads.map(l => `
+        <tr class="hover:bg-slate-800/40 transition">
+          <td class="px-6 py-4">
+            <div class="font-bold text-white">${l.full_name}</div>
+            <div class="text-xs text-slate-400">${l.title}</div>
+          </td>
+          <td class="px-6 py-4">
+            <div class="text-white">${l.firm_name}</div>
+            <div class="text-xs text-slate-500">${l.firm_address || 'Nairobi'}</div>
+          </td>
+          <td class="px-6 py-4">
+            <div class="text-xs font-mono text-emerald-400">${l.email}</div>
+            <div class="text-xs text-slate-500">${l.phone || ''}</div>
+          </td>
+          <td class="px-6 py-4">
+            <span class="px-2.5 py-1 text-xs rounded-full ${l.is_verified ? 'badge-verified' : 'badge-pending'} font-medium">
+              <i class="fa-solid ${l.is_verified ? 'fa-check' : 'fa-clock'} mr-1"></i> ${l.is_verified ? 'MX Validated' : 'Unverified'}
+            </span>
+          </td>
+          <td class="px-6 py-4">
+            <span class="px-2.5 py-1 text-xs rounded-full ${getStatusBadgeClass(l.status)} font-medium">
+              ${l.status}
+            </span>
+          </td>
+          <td class="px-6 py-4 text-right space-x-2">
+            <button onclick="previewPitch(${l.id})" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs rounded-lg transition">
+              Preview Pitch
+            </button>
+            <button onclick="quickSend(${l.id})" class="px-3 py-1.5 bg-emerald-600/80 hover:bg-emerald-600 text-white text-xs rounded-lg transition">
+              Send Outreach
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function getStatusBadgeClass(status) {
+      if (status === 'MEETING_BOOKED') return 'badge-meeting';
+      if (status === 'CONTACTED') return 'bg-blue-500/20 text-blue-400 border border-blue-500/30';
+      if (status === 'OPTED_OUT') return 'bg-rose-500/20 text-rose-400 border border-rose-500/30';
+      return 'bg-slate-800 text-slate-300';
+    }
+
+    function filterLeads() {
+      const q = document.getElementById('lead-search').value.toLowerCase();
+      const st = document.getElementById('status-filter').value;
+      const filtered = currentLeads.filter(l => {
+        const matchesQ = l.full_name.toLowerCase().includes(q) || l.email.toLowerCase().includes(q) || l.firm_name.toLowerCase().includes(q);
+        const matchesSt = !st || l.status === st;
+        return matchesQ && matchesSt;
+      });
+      renderLeadsTable(filtered);
+    }
+
+    async function seedDirectory() {
+      const btn = event.target;
+      btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Syncing...';
+      try {
+        const res = await fetch('/api/crawler/seed', { method: 'POST' });
+        const d = await res.json();
+        alert(`Success: Synced ${d.details.firms_added} law firms and ${d.details.lawyers_added} advocates in Nairobi.`);
+        await loadStats();
+        await loadLeads();
+      } catch (e) {
+        alert("Sync error: " + e);
+      } finally {
+        btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> Sync Nairobi Firm Directory';
+      }
+    }
+
+    async function previewPitch(lawyerId) {
+      try {
+        const res = await fetch(`/api/leads/${lawyerId}/draft-pitch`, { method: 'POST' });
+        const data = await res.json();
+        document.getElementById('modal-subject').value = data.subject;
+        document.getElementById('modal-body').value = data.body;
+        document.getElementById('modal-send-btn').onclick = () => quickSend(lawyerId);
+        document.getElementById('pitch-modal').classList.remove('hidden');
+      } catch (e) {
+        alert("Failed to draft pitch: " + e);
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('pitch-modal').classList.add('hidden');
+    }
+
+    async function quickSend(lawyerId) {
+      closeModal();
+      try {
+        const res = await fetch(`/api/leads/${lawyerId}/send-pitch`, { method: 'POST' });
+        const data = await res.json();
+        alert(data.message || (data.success ? "Outreach email sent successfully!" : "Outreach failed"));
+        await loadStats();
+        await loadLeads();
+        await loadQueue();
+      } catch (e) {
+        alert("Error sending pitch: " + e);
+      }
+    }
+
+    async function loadQueue() {
+      const res = await fetch('/api/queue');
+      const queue = await res.json();
+      const container = document.getElementById('queue-container');
+      if (!queue.length) {
+        container.innerHTML = '<div class="text-slate-500 text-sm text-center py-8">Queue is currently empty. All drafts approved!</div>';
+        return;
+      }
+      container.innerHTML = queue.map(m => `
+        <div class="border border-slate-800 bg-slate-950 p-5 rounded-xl">
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <span class="text-xs uppercase text-slate-500 font-bold">To:</span> <span class="font-semibold text-emerald-400 text-sm">${m.recipient}</span>
+              <div class="font-bold text-white text-base mt-1">${m.subject}</div>
+            </div>
+            <button onclick="approveMessage(${m.id})" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-lg transition flex items-center gap-1.5">
+              <i class="fa-solid fa-check"></i> Approve & Send
+            </button>
+          </div>
+          <p class="text-xs text-slate-300 font-mono whitespace-pre-line bg-slate-900/60 p-4 rounded-lg mt-3 border border-slate-800">${m.body}</p>
+        </div>
+      `).join('');
+    }
+
+    async function approveMessage(id) {
+      try {
+        const res = await fetch(`/api/queue/${id}/approve`, { method: 'POST' });
+        const d = await res.json();
+        alert(d.message);
+        await loadStats();
+        await loadQueue();
+        await loadLeads();
+      } catch (e) {
+        alert("Approval failed: " + e);
+      }
+    }
+
+    async function loadThreads() {
+      const res = await fetch('/api/threads');
+      const threads = await res.json();
+      const list = document.getElementById('threads-list');
+      if (!threads.length) {
+        list.innerHTML = '<div class="text-xs text-slate-500 text-center py-4">No active conversations yet.</div>';
+        return;
+      }
+      list.innerHTML = threads.map(t => `
+        <div onclick="selectThread(${t.id})" class="p-3 rounded-lg border border-slate-800 bg-slate-950 hover:bg-slate-800/60 cursor-pointer transition ${selectedThreadId === t.id ? 'border-emerald-500' : ''}">
+          <div class="flex justify-between items-start">
+            <span class="font-bold text-sm text-white">${t.lawyer_name}</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full ${getStatusBadgeClass(t.status)}">${t.status}</span>
+          </div>
+          <div class="text-xs text-slate-400 truncate">${t.firm_name}</div>
+          <div class="text-xs text-emerald-400 mt-1 font-semibold flex items-center gap-1">
+            <i class="fa-regular fa-envelope"></i> ${t.message_count} messages
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function selectThread(id) {
+      selectedThreadId = id;
+      loadThreads();
+      const res = await fetch(`/api/threads/${id}`);
+      const t = await res.json();
+      document.getElementById('thread-subject').innerText = t.subject;
+      document.getElementById('thread-meta').innerText = `${t.lawyer_name} (${t.firm_name}) • Intent: ${t.intent || 'INQUIRY'} • Sentiment: ${t.sentiment || 'NEUTRAL'}`;
+      
+      const msgBox = document.getElementById('thread-messages');
+      msgBox.innerHTML = t.messages.map(m => `
+        <div class="flex flex-col ${m.direction === 'OUTBOUND' ? 'items-end' : 'items-start'}">
+          <div class="max-w-[85%] rounded-2xl p-4 text-xs font-sans whitespace-pre-line ${m.direction === 'OUTBOUND' ? 'bg-emerald-950/40 border border-emerald-500/40 text-emerald-100 rounded-tr-none' : 'bg-slate-800 text-slate-200 border border-slate-700 rounded-tl-none'}">
+            <div class="font-bold mb-1 opacity-70">${m.direction === 'OUTBOUND' ? 'Wakilify AI (Alex Mwangi)' : t.lawyer_name}</div>
+            ${m.body}
+          </div>
+          <span class="text-[10px] text-slate-500 mt-1">${new Date(m.sent_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+        </div>
+      `).join('');
+      msgBox.scrollTop = msgBox.scrollHeight;
+    }
+
+    async function loadMeetings() {
+      const res = await fetch('/api/meetings');
+      const meetings = await res.json();
+      const container = document.getElementById('meetings-list');
+      if (!meetings.length) {
+        container.innerHTML = '<div class="text-slate-500 text-sm text-center py-8">No meetings booked yet. Use the Simulator tab to test meeting scheduling!</div>';
+        return;
+      }
+      container.innerHTML = meetings.map(m => `
+        <div class="bg-slate-950 border border-purple-500/30 p-5 rounded-xl flex items-center justify-between shadow-lg shadow-purple-500/5">
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 text-xl font-bold">
+              <i class="fa-solid fa-calendar-check"></i>
+            </div>
+            <div>
+              <div class="text-base font-bold text-white">${m.lawyer_name} <span class="text-xs text-slate-400 font-normal">(${m.firm_name})</span></div>
+              <div class="text-xs text-purple-300 font-semibold mt-0.5"><i class="fa-regular fa-clock mr-1"></i> ${m.scheduled_for}</div>
+              <div class="text-xs text-slate-400 mt-1 font-mono">${m.lawyer_email}</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <a href="${m.meeting_link}" target="_blank" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs rounded-lg transition flex items-center gap-1.5">
+              <i class="fa-solid fa-video"></i> Open Google Meet
+            </a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function populateSimSelect(leads) {
+      const sel = document.getElementById('sim-lawyer-select');
+      sel.innerHTML = leads.map(l => `<option value="${l.email}">${l.full_name} (${l.firm_name} - ${l.email})</option>`).join('');
+    }
+
+    function fillScenario(type) {
+      const txt = document.getElementById('sim-body');
+      if (type === 'meet') {
+        txt.value = "Hi Alex, thank you for reaching out. The legal tech platform sounds very promising for our corporate team. Let's meet this Thursday at 3:00 PM for a 15-minute coffee or virtual call.";
+      } else if (type === 'traction') {
+        txt.value = "Hello Alex, this caught my attention. Could you please share your investor deck and tell me more about your pilot traction and traction in Nairobi so far?";
+      } else if (type === 'privilege') {
+        txt.value = "Dear Alex, our firm takes client privilege very seriously under the Advocates Act and ODPC rules. How does your AI ensure client documents are kept secure and confidential?";
+      } else if (type === 'busy') {
+        txt.value = "Dear Alex, we are swamped with a big arbitration hearing right now. Please follow up with me in two weeks.";
+      } else if (type === 'unsub') {
+        txt.value = "Please remove me from your mailing list and unsubscribe.";
+      }
+    }
+
+    async function submitSimulatedReply() {
+      const email = document.getElementById('sim-lawyer-select').value;
+      const body = document.getElementById('sim-body').value;
+      if (!body) return alert("Please enter reply body or pick a scenario.");
+
+      const resultBox = document.getElementById('sim-result');
+      resultBox.classList.remove('hidden');
+      resultBox.innerHTML = '<div class="text-slate-400 text-sm"><i class="fa-solid fa-spinner animate-spin mr-2"></i> Agent is analyzing intent, checking knowledge base, and formulating response...</div>';
+
+      try {
+        const res = await fetch('/api/threads/simulate-reply', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ lawyer_email: email, body: body })
+        });
+        const data = await res.json();
+        
+        let meetingBanner = '';
+        if (data.meeting_scheduled) {
+          meetingBanner = `
+            <div class="mb-4 p-3 rounded-lg bg-purple-500/20 border border-purple-500/40 text-purple-300 text-xs font-semibold flex items-center gap-2">
+              <i class="fa-solid fa-bell text-lg"></i>
+              <span>MEETING BOOKED! Instant alert dispatched to Founder. Scheduled: ${data.meeting_details.scheduled_for}</span>
+            </div>
+          `;
+        }
+
+        resultBox.innerHTML = `
+          ${meetingBanner}
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-xs uppercase font-bold text-slate-400">AI Intent Detected:</span>
+            <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400">${data.intent} (${data.sentiment})</span>
+          </div>
+          <div class="text-xs text-slate-300 mb-1 font-bold">Drafted Reply:</div>
+          <div class="p-3 bg-slate-900 rounded-lg text-xs font-mono text-slate-200 whitespace-pre-line border border-slate-800">${data.reply_body}</div>
+        `;
+        await loadStats();
+        await loadMeetings();
+        await loadQueue();
+        await loadThreads();
+      } catch (e) {
+        resultBox.innerHTML = `<div class="text-rose-400 text-xs">Error: ${e}</div>`;
+      }
+    }
+
+    async function loadSettings() {
+      const res = await fetch('/api/settings');
+      const d = await res.json();
+      document.getElementById('cfg-startup').value = d.STARTUP_NAME || '';
+      document.getElementById('cfg-founder').value = d.FOUNDER_NAME || '';
+      document.getElementById('cfg-email').value = d.FOUNDER_EMAIL || '';
+      document.getElementById('cfg-calendly').value = d.CALENDLY_URL || '';
+      document.getElementById('cfg-approval').checked = d.REQUIRE_HUMAN_APPROVAL;
+    }
+
+    async function saveSettings(e) {
+      e.preventDefault();
+      const payload = {
+        STARTUP_NAME: document.getElementById('cfg-startup').value,
+        FOUNDER_NAME: document.getElementById('cfg-founder').value,
+        FOUNDER_EMAIL: document.getElementById('cfg-email').value,
+        CALENDLY_URL: document.getElementById('cfg-calendly').value,
+        REQUIRE_HUMAN_APPROVAL: document.getElementById('cfg-approval').checked
+      };
+      const key = document.getElementById('cfg-gemini').value;
+      if (key) payload.GEMINI_API_KEY = key;
+
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const d = await res.json();
+      alert(d.message || "Settings updated!");
+    }
+
+    function switchTab(name) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.remove('border-emerald-500', 'text-emerald-400');
+        b.classList.add('border-transparent', 'text-slate-400');
+      });
+
+      document.getElementById(`tab-${name}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`tab-btn-${name}`);
+      activeBtn.classList.add('border-emerald-500', 'text-emerald-400');
+      activeBtn.classList.remove('border-transparent', 'text-slate-400');
+
+      if (name === 'queue') loadQueue();
+      if (name === 'threads') loadThreads();
+      if (name === 'meetings') loadMeetings();
+      if (name === 'settings') loadSettings();
+    }
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadStats();
+      await loadLeads();
+      // If no leads exist, trigger seed automatically
+      if (!currentLeads.length) {
+        await seedDirectory();
+      }
+    });
+  </script>
+</body>
+</html>
